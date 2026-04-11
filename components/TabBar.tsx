@@ -23,9 +23,8 @@ export function MyTabBar({
   };
 
   return (
-    <View className="flex-row bg-white h-24 border-t border-gray-100 pb-4">
+    <View className="flex-row bg-white h-24 border-t border-gray-100">
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
         const isFocused = state.index === index;
         const name = route.name as RouteNames;
 
@@ -46,7 +45,6 @@ export function MyTabBar({
             key={route.key}
             onPress={onPress}
             activeOpacity={0.9}
-            // The magic for your design:
             className={`flex-1 items-center justify-center ${
               isFocused ? "bg-black" : "bg-white"
             }`}
