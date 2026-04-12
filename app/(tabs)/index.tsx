@@ -28,8 +28,8 @@ export default function HomeScreen() {
       </View>
 
       <View className="flex flex-col gap-4 mt-6">
-        {tools.map((tool) => (
-          <ToolCard key={tool.name} card={tool} />
+        {tools.map((tool, index) => (
+          <ToolCard key={tool.name} card={tool} index={index} />
         ))}
       </View>
     </ScrollView>

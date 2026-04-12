@@ -18,7 +18,10 @@ export type ToolCardType = {
   href: ToolHref;
 };
 
-export const ToolCard: React.FC<{ card: ToolCardType }> = ({ card }) => {
+export const ToolCard: React.FC<{ card: ToolCardType; index?: number }> = ({
+  card,
+  index,
+}) => {
   const icons: Record<IconKey, IconSvgElement> = {
     convert: Exchange01Icon,
     notes: NoteEditIcon,
@@ -29,12 +32,24 @@ export const ToolCard: React.FC<{ card: ToolCardType }> = ({ card }) => {
 
   return (
     <View className="flex flex-col shadow-sm bg-white gap-4 p-6">
-      <HugeiconsIcon icon={IconComponent} size={22} color={"black"} />
+      <View className="flex flex-row justify-between items-center gap-3 mb-6">
+        <HugeiconsIcon icon={IconComponent} size={32} color={"black"} />{" "}
+        <Text className="uppercase text-lg text-neutral-500">
+          Module {index !== undefined ? `0${index + 1}` : null}
+        </Text>
+      </View>
+
       <Text className="text-neutral-900 text-3xl font-bold">{card.name}</Text>
       <Text className="text-neutral-500 text-lg">{card.description}</Text>
 
-      <Link href={card.href} asChild>
-        <Text className="text-blue-600">Use Now</Text>
+      <Link
+        href={card.href}
+        asChild
+        className="w-full px-6 py-3 bg-neutral-200"
+      >
+        <Text className="text-neutral-900 uppercase text-center mt-2">
+          Use Now
+        </Text>
       </Link>
     </View>
   );
