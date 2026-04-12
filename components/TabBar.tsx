@@ -55,7 +55,8 @@ export function MyTabBar({
               color={isFocused ? "white" : "#737373"}
             />
             <Text
-              className={`text-[10px] font-bold mt-1 uppercase tracking-widest ${
+              style={{ fontFamily: "Manrope_700Bold" }}
+              className={`text-[10px] mt-1 uppercase tracking-widest ${
                 isFocused ? "text-white" : "text-neutral-500"
               }`}
             >

@@ -8,8 +8,8 @@ export const TopBar = () => {
       <View className="flex items-center flex-row gap-3">
         <HugeiconsIcon icon={ToolsIcon} />
         <Text
-          className="uppercase font-bold text-3xl text-neutral-900"
-          style={{ color: "black" }}
+          style={{ fontFamily: "Manrope_700Bold" }}
+          className="uppercase font-sans text-3xl text-neutral-900"
         >
           Toolsy
         </Text>

@@ -7,7 +7,7 @@ import { tools } from "@/constants/tools";
 export default function HomeScreen() {
   return (
     <ScrollView
-      className="flex-1 bg-neutral-100"
+      className="flex-1 bg-neutral-100 font-sans"
       contentContainerStyle={{
         paddingTop: 24,
         paddingHorizontal: 24,
@@ -16,12 +16,15 @@ export default function HomeScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View className="flex flex-col gap-4">
-        <Text className="text-6xl font-bold uppercase w-6/10">
+        <Text
+          style={{ fontFamily: "Manrope_700Bold" }}
+          className="text-4xl uppercase w-6/10"
+        >
           Essential tools
         </Text>
         <View className="flex flex-row items-center gap-4">
           <View className="w-0.5 h-full bg-black" />
-          <Text className="text-neutral-500 text-lg">
+          <Text className="text-neutral-500 text-lg font-sans">
             Pure utility for daily tasks
           </Text>
         </View>

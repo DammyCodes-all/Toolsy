@@ -1,3 +1,50 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+  Manrope font utilities for NativeWind / React Native.
+
+  Important notes:
+  - On native platforms, changing font weight alone does not guarantee
+    the platform will use a different font file. You must set the exact
+    fontFamily that corresponds to the font asset loaded at runtime
+    by the font loader (e.g. @expo-google-fonts/manrope).
+  - These utilities set only `font-family` to the loaded asset names
+    (e.g. "Manrope_400Regular", "Manrope_700Bold") so the correct font
+    file is used for each weight.
+  - Ensure the names below exactly match the names registered by your
+    font loader in `app/_layout.tsx` or by your native preload configuration.
+*/
+
+@layer utilities {
+  /* Primary sans mapping (used by `font-sans`) */
+  .font-sans {
+    font-family: "Manrope_400Regular";
+  }
+
+  /* Weight-specific mappings (do NOT include font-weight) */
+  .font-normal {
+    font-family: "Manrope_400Regular";
+  }
+
+  .font-medium {
+    font-family: "Manrope_500Medium";
+  }
+
+  .font-semibold {
+    font-family: "Manrope_600SemiBold";
+  }
+
+  .font-bold {
+    font-family: "Manrope_700Bold";
+  }
+
+  .font-black {
+    font-family: "Manrope_700Bold";
+  }
+
+  .font-manrope-700 {
+    font-family: "Manrope_700Bold";
+  }
+}

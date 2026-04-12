@@ -11,11 +11,11 @@ import { TopBar } from "@/components/topbar";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
-  Inter_400Regular,
-  Inter_600SemiBold,
-  Inter_700Bold,
-  Inter_900Black,
-} from "@expo-google-fonts/inter";
+  Manrope_400Regular,
+  Manrope_500Medium,
+  Manrope_600SemiBold,
+  Manrope_700Bold,
+} from "@expo-google-fonts/manrope";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -24,11 +24,12 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
-  const [fontsLoaded, fontsError] = useFonts({
-    Inter_400Regular,
-    Inter_600SemiBold,
-    Inter_700Bold,
-    Inter_900Black,
+  // Load Manrope font weights
+  const [fontsLoaded] = useFonts({
+    Manrope_400Regular,
+    Manrope_500Medium,
+    Manrope_600SemiBold,
+    Manrope_700Bold,
   });
 
   const colorScheme = useColorScheme();
@@ -37,27 +38,31 @@ export default function RootLayout() {
   const statusBarStyle = isDark ? "light" : "dark";
 
   useEffect(() => {
-    if (fontsLoaded || fontsError) {
-      SplashScreen.hideAsync();
+    if (fontsLoaded) {
+      SplashScreen.hideAsync().catch(() => {});
 
-      if (fontsLoaded) {
-        const anyText = RNText as any;
-        anyText.defaultProps = anyText.defaultProps || {};
+      const anyText = RNText as any;
+      anyText.defaultProps = anyText.defaultProps || {};
 
-        const existing = anyText.defaultProps.style;
+      const existing = anyText.defaultProps.style;
 
-        if (Array.isArray(existing)) {
-          anyText.defaultProps.style = [{ fontFamily: "Inter" }, ...existing];
-        } else if (existing) {
-          anyText.defaultProps.style = [{ fontFamily: "Inter" }, existing];
-        } else {
-          anyText.defaultProps.style = { fontFamily: "Inter" };
-        }
+      if (Array.isArray(existing)) {
+        anyText.defaultProps.style = [
+          { fontFamily: "Manrope_400Regular" },
+          ...existing,
+        ];
+      } else if (existing) {
+        anyText.defaultProps.style = [
+          { fontFamily: "Manrope_400Regular" },
+          existing,
+        ];
+      } else {
+        anyText.defaultProps.style = { fontFamily: "Manrope_400Regular" };
       }
     }
-  }, [fontsLoaded, fontsError]);
+  }, [fontsLoaded]);
 
-  if (!fontsLoaded && !fontsError) {
+  if (!fontsLoaded) {
     return null;
   }
 
