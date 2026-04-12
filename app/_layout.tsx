@@ -1,24 +1,65 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import "./global.css";
 
-import { useColorScheme } from "react-native";
+import { useColorScheme, Text as RNText } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TopBar } from "@/components/topbar";
+
+import * as SplashScreen from "expo-splash-screen";
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  Inter_900Black,
+} from "@expo-google-fonts/inter";
 
 export const unstable_settings = {
   anchor: "(tabs)",
 };
 
+SplashScreen.preventAutoHideAsync().catch(() => {});
+
 export default function RootLayout() {
+  const [fontsLoaded, fontsError] = useFonts({
+    Inter_400Regular,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_900Black,
+  });
+
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-
   const safeAreaClassName = `${isDark ? "bg-neutral-900" : "bg-neutral-100"} flex-1`;
-
   const statusBarStyle = isDark ? "light" : "dark";
+
+  useEffect(() => {
+    if (fontsLoaded || fontsError) {
+      SplashScreen.hideAsync();
+
+      if (fontsLoaded) {
+        const anyText = RNText as any;
+        anyText.defaultProps = anyText.defaultProps || {};
+
+        const existing = anyText.defaultProps.style;
+
+        if (Array.isArray(existing)) {
+          anyText.defaultProps.style = [{ fontFamily: "Inter" }, ...existing];
+        } else if (existing) {
+          anyText.defaultProps.style = [{ fontFamily: "Inter" }, existing];
+        } else {
+          anyText.defaultProps.style = { fontFamily: "Inter" };
+        }
+      }
+    }
+  }, [fontsLoaded, fontsError]);
+
+  if (!fontsLoaded && !fontsError) {
+    return null;
+  }
 
   return (
     <SafeAreaProvider>
