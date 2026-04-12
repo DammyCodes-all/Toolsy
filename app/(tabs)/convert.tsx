@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { ConvertSwitch } from "@/components/convert/ConvertSwitch";
 import { ConvertTypes } from "@/constants/types";
@@ -7,6 +7,23 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowReloadHorizontalFreeIcons } from "@hugeicons/core-free-icons";
 import { convertData } from "@/constants/convert-data";
 import { convertMetric } from "@/utils/convert";
+
+function parseUserNumber(s: string): number {
+  if (typeof s !== "string") return NaN;
+  const trimmed = s.trim();
+  if (
+    trimmed === "" ||
+    trimmed === "-" ||
+    trimmed === "." ||
+    trimmed === "-."
+  ) {
+    return NaN;
+  }
+
+  const normalized = trimmed.replace(/,/g, ".");
+  const parsed = parseFloat(normalized);
+  return Number.isFinite(parsed) ? parsed : NaN;
+}
 
 const switches: {
   key: ConvertTypes;
@@ -20,7 +37,6 @@ const switches: {
 
 type ConvertState = {
   input: number;
-  output: number;
   selectedUnit: string;
   outputUnit: string;
 };
@@ -28,15 +44,30 @@ type ConvertState = {
 export default function ConvertScreen() {
   const [currentMetric, setCurrentMetric] = useState<ConvertTypes>("length");
   const units = convertData[currentMetric].units;
-  const [convertState, setConvertState] = useState<ConvertState>({
-    input: 0,
-    output: 0,
-    selectedUnit: "Metres",
-    outputUnit: "Metres",
+
+  const [convertState, setConvertState] = useState<ConvertState>(() => {
+    const defaultUnit = units[0] ?? "";
+    return {
+      input: 0,
+      selectedUnit: defaultUnit,
+      outputUnit: defaultUnit,
+    };
   });
 
+  useEffect(() => {
+    const defaultUnit = units[0] ?? "";
+    setConvertState((prev) => ({
+      ...prev,
+      selectedUnit: defaultUnit,
+      outputUnit: defaultUnit,
+    }));
+  }, [units]);
+
   const handleInputChange = (value: number) => {
-    setConvertState((prev) => ({ ...prev, input: value }));
+    setConvertState((prev) => ({
+      ...prev,
+      input: parseUserNumber(value.toString()),
+    }));
   };
 
   const handleUnitChange = (unit: string) => {
@@ -47,26 +78,21 @@ export default function ConvertScreen() {
     setConvertState((prev) => ({ ...prev, outputUnit: unit }));
   };
 
-  useEffect(() => {
-    const { input, selectedUnit, outputUnit } = convertState;
-
-    const output = convertMetric(
+  const outputValue = useMemo(() => {
+    if (!Number.isFinite(convertState.input)) return NaN;
+    return convertMetric(
       currentMetric,
-      input,
-      selectedUnit,
-      outputUnit,
+      convertState.input,
+      convertState.selectedUnit,
+      convertState.outputUnit,
     );
-
-    setConvertState((prev) => {
-      if (prev.output === output) return prev;
-      return { ...prev, output };
-    });
   }, [
+    currentMetric,
     convertState.input,
     convertState.selectedUnit,
     convertState.outputUnit,
-    currentMetric,
   ]);
+
   return (
     <ScrollView
       className="flex-1 bg-neutral-100 text-neutral-900"
@@ -117,19 +143,19 @@ export default function ConvertScreen() {
           input={convertState.input}
           onInputChange={handleInputChange}
         />
+
         <View className="mx-auto flex justify-center items-center p-4 text-neutral-100 bg-neutral-900">
           <HugeiconsIcon
             icon={ArrowReloadHorizontalFreeIcons}
             className="text-neutral-100"
           />
         </View>
-
         <ConvertBox
           category={currentMetric}
           to={true}
           options={units}
           selectedOption={convertState.outputUnit}
-          input={convertState.output}
+          input={Number(outputValue)}
           onInputChange={() => {}}
           onOptionChange={handleOutputUnitChange}
         />

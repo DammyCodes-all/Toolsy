@@ -72,10 +72,6 @@ const celsiusToTemp = (c: number, unit: string): number => {
   return NaN;
 };
 
-/**
- * Convert metric value using exact display unit names from convert-data.ts.
- * Returns a number rounded to 4 decimal places, or NaN if conversion fails.
- */
 export const convertMetric = (
   metric: ConvertTypes,
   input: number,
@@ -87,4 +83,17 @@ export const convertMetric = (
   let result: number = NaN;
 
   if (metric === "length") {
-    const metres
+    const metres = lengthToMetre(input, selectedUnit);
+    result = metreToLength(metres, outputUnit);
+  } else if (metric === "weight") {
+    const kg = weightToKilogram(input, selectedUnit);
+    result = kilogramToWeight(kg, outputUnit);
+  } else if (metric === "temp") {
+    const c = tempToCelsius(input, selectedUnit);
+    result = celsiusToTemp(c, outputUnit);
+  }
+
+  if (!Number.isFinite(result)) return NaN;
+
+  return Math.round(result * 10000) / 10000;
+};

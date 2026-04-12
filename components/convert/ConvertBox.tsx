@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, TextInput, Text, StyleSheet, Platform } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -28,46 +28,39 @@ export const ConvertBox: React.FC<ConvertBoxProps> = ({
   const data = (options ?? []).map((o) => ({ label: o, value: o }));
   const value = selectedOption ?? data[0]?.value ?? "";
 
+  const displayValue = Number.isFinite(input) ? String(input) : "";
+
   return (
     <View
-      className={`p-6 shadow-sm flex gap-4 ${to ? "bg-neutral-200" : "bg-white"}`}
+      style={[styles.container, to ? styles.containerTo : styles.containerFrom]}
     >
-      <Text className="text-md uppercase font-semibold text-gray-600">
-        {to ? "To (result)" : "From (source)"}
-      </Text>
+      <Text style={styles.label}>{to ? "To (result)" : "From (source)"}</Text>
 
       <TextInput
-        className={`border p-4 text-3xl h-24 ${to ? "border-neutral-200 text-gray-500" : "border-neutral-900"}`}
-        value={Number.isFinite(input) ? String(input) : ""}
+        value={displayValue}
         onChangeText={(text) => {
           const normalized = text.replace(/,/g, ".");
           if (normalized.trim() === "") {
             onInputChange(NaN);
             return;
           }
+
           const parsed = parseFloat(normalized);
           onInputChange(Number.isFinite(parsed) ? parsed : NaN);
         }}
         placeholder={`Enter ${current ?? "Value"}`}
-        keyboardType="numeric"
-        inputMode="numeric"
+        keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
         returnKeyType="done"
         editable={!to}
         selectTextOnFocus={!to}
         style={[
-          { fontFamily: "Manrope_700Bold" },
-          to
-            ? {
-                backgroundColor: "#F3F4F6",
-                borderColor: "#E5E7EB",
-                color: "#6B7280",
-                opacity: 0.9,
-              }
-            : {},
+          styles.input,
+          { fontFamily: Platform.OS === "web" ? "Manrope_700Bold" : undefined },
+          to ? styles.inputDisabled : undefined,
         ]}
       />
 
-      <View className="mt-3">
+      <View style={{ marginTop: 12 }}>
         <Dropdown
           data={data}
           labelField="label"
@@ -84,11 +77,7 @@ export const ConvertBox: React.FC<ConvertBoxProps> = ({
           placeholderStyle={styles.placeholder}
           renderItem={(item) => (
             <View style={styles.item}>
-              <Text
-                style={[styles.itemLabel, { fontFamily: "Manrope_400Regular" }]}
-              >
-                {item.label}
-              </Text>
+              <Text style={styles.itemLabel}>{item.label}</Text>
             </View>
           )}
           renderRightIcon={() => (
@@ -105,10 +94,41 @@ export const ConvertBox: React.FC<ConvertBoxProps> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    gap: 12 as any,
+  },
+  containerFrom: {
+    backgroundColor: "#FFFFFF",
+  },
+  containerTo: {
+    backgroundColor: "#FFFFFF",
+  },
+  label: {
+    fontSize: 12,
+    color: "#374151",
+    marginBottom: 6,
+    fontWeight: "600",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#111827",
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === "web" ? 12 : 10,
+    backgroundColor: "#FFFFFF",
+    color: "#111827",
+    fontSize: 24,
+    height: 96,
+  },
+  inputDisabled: {
+    backgroundColor: "#F3F4F6",
+    borderColor: "#E5E7EB",
+    color: "#6B7280",
+    opacity: 0.9,
+  },
   dropdown: {
     borderWidth: 1,
     borderColor: "#E5E7EB",
-    fontFamily: "Manrope_400Regular",
     borderRadius: 0,
     paddingHorizontal: 12,
     paddingVertical: Platform.OS === "web" ? 10 : 8,
@@ -116,7 +136,6 @@ const styles = StyleSheet.create({
     minHeight: 44,
     justifyContent: "center",
   },
-
   selectedText: {
     color: "#111827",
     textTransform: "uppercase",
@@ -124,26 +143,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Manrope_400Regular",
   },
-
   placeholder: {
     color: "#9CA3AF",
     textTransform: "uppercase",
     fontSize: 14,
     fontFamily: "Manrope_400Regular",
   },
-
   item: {
     paddingVertical: 8,
     paddingHorizontal: 12,
   },
-
   itemLabel: {
     fontSize: 16,
     color: "#111827",
     fontFamily: "Manrope_400Regular",
     textTransform: "uppercase",
   },
-
   chevron: {
     color: "#9CA3AF",
   },
