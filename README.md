@@ -1,5 +1,7 @@
 # Toolsy
 
+Built with ❤️ by Aluminate
+
 A compact collection of utility tools built with Expo + React Native (Expo Router). Toolsy favors a strict monochrome design system and small, focused utilities that are easy to extend. The app uses simple, reusable components and a file-based routing approach.
 
 This README explains the project layout, how to run the app, how to add new tools, and a quick tour of important implementation details (including the discount calculator, Convert tool, Notes tool, and Naira formatting).
