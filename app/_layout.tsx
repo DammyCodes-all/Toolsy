@@ -7,6 +7,7 @@ import "./global.css";
 import { useColorScheme, Text as RNText } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TopBar } from "@/components/topbar";
+import { NotesProvider } from "../contexts/NotesContext";
 
 import * as SplashScreen from "expo-splash-screen";
 import {
@@ -24,7 +25,6 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
-  // Load Manrope font weights
   const [fontsLoaded] = useFonts({
     Manrope_400Regular,
     Manrope_500Medium,
@@ -67,18 +67,26 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView
-        className={safeAreaClassName}
-        edges={["top", "right", "bottom", "left"]}
-      >
-        <TopBar />
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
+    <NotesProvider>
+      <SafeAreaProvider>
+        <SafeAreaView
+          className={safeAreaClassName}
+          edges={["top", "right", "bottom", "left"]}
+        >
+          <TopBar />
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="create-note"
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack>
 
-        <StatusBar style={statusBarStyle} />
-      </SafeAreaView>
-    </SafeAreaProvider>
+          <StatusBar style={statusBarStyle} />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </NotesProvider>
   );
 }

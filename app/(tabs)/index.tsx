@@ -25,7 +25,7 @@ export default function HomeScreen() {
         <View className="flex flex-row items-center gap-4">
           <View className="w-0.5 h-full bg-black" />
           <Text className="text-neutral-500 text-lg font-sans">
-            Pure utility for daily tasks
+            Pure utility for daily tasks.
           </Text>
         </View>
       </View>

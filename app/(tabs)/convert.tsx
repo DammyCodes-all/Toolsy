@@ -4,7 +4,7 @@ import { ConvertSwitch } from "@/components/convert/ConvertSwitch";
 import { ConvertTypes } from "@/constants/types";
 import { ConvertBox } from "@/components/convert/ConvertBox";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ArrowReloadHorizontalFreeIcons } from "@hugeicons/core-free-icons";
+import { Exchange01Icon } from "@hugeicons/core-free-icons";
 import { convertData } from "@/constants/convert-data";
 import { convertMetric } from "@/utils/convert";
 
@@ -113,7 +113,7 @@ export default function ConvertScreen() {
         <View className="flex flex-row items-center gap-4">
           <View className="w-0.5 h-full bg-black" />
           <Text className="text-neutral-500 text-lg font-sans">
-            Architectural precision utility
+            Architectural precision utility.
           </Text>
         </View>
       </View>
@@ -145,10 +145,7 @@ export default function ConvertScreen() {
         />
 
         <View className="mx-auto flex justify-center items-center p-4 text-neutral-100 bg-neutral-900">
-          <HugeiconsIcon
-            icon={ArrowReloadHorizontalFreeIcons}
-            className="text-neutral-100"
-          />
+          <HugeiconsIcon icon={Exchange01Icon} className="text-neutral-100" />
         </View>
         <ConvertBox
           category={currentMetric}

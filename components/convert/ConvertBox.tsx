@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { View, TextInput, Text, StyleSheet, Platform } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -33,6 +33,7 @@ export const ConvertBox: React.FC<ConvertBoxProps> = ({
   return (
     <View
       style={[styles.container, to ? styles.containerTo : styles.containerFrom]}
+      className={to ? "bg-neutral-200" : ""}
     >
       <Text style={styles.label}>{to ? "To (result)" : "From (source)"}</Text>
 
@@ -102,10 +103,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   containerTo: {
-    backgroundColor: "#FFFFFF",
+    // backgroundColor: "#FFFFFF",
   },
   label: {
     fontSize: 12,
+    fontFamily: "Manrope_400Regular",
     color: "#374151",
     marginBottom: 6,
     fontWeight: "600",
@@ -118,7 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     color: "#111827",
     fontSize: 24,
-    height: 96,
+    height: 63,
   },
   inputDisabled: {
     backgroundColor: "#F3F4F6",

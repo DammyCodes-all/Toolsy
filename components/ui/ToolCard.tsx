@@ -52,9 +52,9 @@ export const ToolCard: React.FC<{ card: ToolCardType; index?: number }> = ({
       <Link
         href={card.href}
         asChild
-        className="w-full px-6 py-3 bg-neutral-200"
+        className="w-full px-6 py-3 bg-neutral-900"
       >
-        <Text className="text-neutral-900 font-sans uppercase text-center mt-2">
+        <Text className="text-neutral-100 font-sans uppercase text-center mt-2">
           Use Now
         </Text>
       </Link>
