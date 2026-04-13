@@ -1,5 +1,7 @@
 # Toolsy
 
+Minimal utilities for daily tasks: unit converter, notes, and a Naira-aware discount calculator. Built with Expo + React Native.
+
 Built with ❤️ by Aluminate
 
 A compact collection of utility tools built with Expo + React Native (Expo Router). Toolsy favors a strict monochrome design system and small, focused utilities that are easy to extend. The app uses simple, reusable components and a file-based routing approach.
