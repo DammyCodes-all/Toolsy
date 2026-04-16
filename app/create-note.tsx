@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { router } from "expo-router";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -8,14 +7,48 @@ import {
   View,
   Alert,
 } from "react-native";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 import { useNotes } from "../contexts/NotesContext";
 
 export default function CreateNoteScreen() {
-  const { addNote } = useNotes();
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
+  const router = useRouter();
+  const params = useLocalSearchParams() as { id?: string };
+
+  const { id: routeId } = params;
+  const noteId = routeId ?? undefined;
+
+  const { notes, addNote, updateNote } = useNotes();
+
+  const existingNote = useMemo(() => {
+    if (!noteId) return undefined;
+    return notes.find((n: any) => n.id === noteId);
+  }, [notes, noteId]);
+
+  const [title, setTitle] = useState<string>("");
+  const [body, setBody] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
+
+  const isEdit = Boolean(noteId);
+
+  useEffect(() => {
+    if (isEdit) {
+      if (!existingNote) {
+        Alert.alert(
+          "Note not found",
+          "The note you are trying to edit was not found.",
+          [{ text: "OK", onPress: () => router.back() }],
+        );
+        return;
+      }
+
+      setTitle(existingNote.title ?? "");
+      setBody(existingNote.body ?? "");
+    } else {
+      setTitle("");
+      setBody("");
+    }
+  }, [isEdit, existingNote, router]);
 
   const handleSave = async () => {
     const trimmedTitle = title.trim();
@@ -29,10 +62,24 @@ export default function CreateNoteScreen() {
     try {
       setIsSaving(true);
 
-      await addNote({
-        title: trimmedTitle,
-        body: trimmedBody,
-      });
+      if (isEdit && noteId) {
+        if (typeof updateNote === "function") {
+          await updateNote(noteId, {
+            title: trimmedTitle,
+            body: trimmedBody,
+          });
+        } else {
+          await addNote({
+            title: trimmedTitle,
+            body: trimmedBody,
+          });
+        }
+      } else {
+        await addNote({
+          title: trimmedTitle,
+          body: trimmedBody,
+        });
+      }
 
       router.back();
     } finally {
@@ -75,13 +122,13 @@ export default function CreateNoteScreen() {
               style={{ fontFamily: "Manrope_700Bold" }}
               className="text-4xl uppercase"
             >
-              Create note
+              {isEdit ? "Edit note" : "Create note"}
             </Text>
 
             <View className="flex flex-row items-center gap-4">
               <View className="w-0.5 h-full bg-black" />
               <Text className="text-neutral-500 text-lg font-sans">
-                Easily create a new note.
+                {isEdit ? "Update your note." : "Easily create a new note."}
               </Text>
             </View>
           </View>
@@ -149,7 +196,7 @@ export default function CreateNoteScreen() {
                 style={{ fontFamily: "Manrope_700Bold" }}
                 className="text-center text-sm uppercase text-white"
               >
-                {isSaving ? "Saving..." : "Save note"}
+                {isSaving ? "Saving..." : isEdit ? "Save changes" : "Save note"}
               </Text>
             </Pressable>
           </View>

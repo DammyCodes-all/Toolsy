@@ -251,4 +251,66 @@ Developer notes & best practices
 - Document helper utilities with small JSDoc comments for future maintainers.
 - When adding numeric inputs, use string state and parsing helpers to avoid edit-time numeric corner cases.
 
+Stage 1 - Task/Checklist Manager additions
+------------------------------------------
+This repository has been updated to meet the Stage 1 Mobile Track requirements by extending the existing Notes / To‑Do feature into a simple task manager with edit capability and clear build/upload guidance for Appetize. Summary of what was added and where to look:
+
+What was added
+- Edit existing tasks:
+  - A new `updateNote` operation was introduced in `contexts/NotesContext.tsx` (context API now exposes an edit/update function).
+  - The `create-note` screen (`app/create-note.tsx`) was extended to support both create and edit modes (when called with an `id` route param it pre-fills fields and saves updates).
+  - `components/ui/Note.tsx` includes an Edit action that navigates to the create-note screen in edit mode.
+- Create & mark tasks completed:
+  - Existing `addNote` and `toggleNoteDone` remain in place and continue to be used.
+- Delete tasks:
+  - Existing `removeNote` remains, with a delete confirmation in the list UI.
+- Local persistence (offline):
+  - Storage continues to use `@react-native-async-storage/async-storage` under the key `toolsy.notes`. This provides offline persistence for tasks.
+
+Changed / important files
+- `Toolsy/contexts/NotesContext.tsx` — added `updateNote` and updated the exported context type to include this operation; `NoteItem` remains the canonical task shape for now.
+- `Toolsy/app/create-note.tsx` — now supports create + edit modes (prefill when `id` param is provided).
+- `Toolsy/components/ui/Note.tsx` — added an Edit action (navigates to `/create-note?id=<note.id>`), alongside the existing delete and toggle behaviors.
+
+How to build an APK and upload to Appetize (quick guide)
+1. Prepare:
+   - Ensure `eas.json` is present and configured for your build profiles (this repo includes an `eas.json`).
+   - Install EAS CLI and authenticate:
+     - `npm install -g eas-cli`
+     - `eas login`
+2. Build (Android APK preview):
+   - Run: `eas build -p android --profile preview`
+   - When the build completes, download the generated `.apk` from the EAS build console or via `eas build:list` and `eas build:download`.
+3. Upload to Appetize:
+   - Visit https://appetize.io/upload
+   - Upload the APK and follow the prompts to generate a public preview link.
+   - Save the public URL and include it with your submission.
+4. iOS (optional):
+   - Building an IPA requires Apple credentials. Use `eas build -p ios` and follow EAS prompts for credentials or configure them in App Store Connect.
+5. Add the Appetize public URL to this README (under "Appetize preview link") and include it in your submission form.
+
+Verification checklist (what to test)
+- Edit flow:
+  - Open the Notes screen, tap Edit on an existing note, modify fields, and save — changes persist and show immediately.
+- Create / Delete / Toggle:
+  - Create a new note, mark it done/undone, delete it with confirmation.
+- Persistence:
+  - Close the app fully and restart; tasks should persist via AsyncStorage (key: `toolsy.notes`).
+- If you need checklist/subtask support in the future, extend `NoteItem` in `contexts/NotesContext.tsx` with a `subtasks` array and surface operations in the context.
+
+Submission checklist
+- Appetize preview link (public)
+- GitHub repository link (this repo)
+- LinkedIn/X post describing:
+  - Development process
+  - Challenges encountered
+  - Purpose of the task
+  - How the task improved your workflow
+  - Tag the HNG Internship account in the post
+
+Next steps I can take for you
+- Open a PR with the concrete code changes (implementing `updateNote`, wiring the edit mode in `create-note`, and adding the Edit action in the Note UI).
+- Provide the exact EAS commands you should run locally and what to expect from the build output.
+- Draft a short LinkedIn/X post you can publish for the submission.
+
 Built with ❤️ by Aluminate

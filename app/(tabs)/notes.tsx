@@ -36,6 +36,14 @@ export default function NoteScreen() {
     ]);
   };
 
+  const openEditor = (id?: string) => {
+    if (id) {
+      router.push(`/create-note?id=${id}`);
+    } else {
+      router.push("/create-note");
+    }
+  };
+
   return (
     <View className="flex-1 bg-neutral-100">
       <ScrollView
@@ -96,6 +104,7 @@ export default function NoteScreen() {
                 note={note}
                 onToggleDone={() => toggleNoteDone(note.id)}
                 onDelete={() => confirmAndRemove(note.id)}
+                onEdit={() => openEditor(note.id)}
               />
             ))
           )}
@@ -103,7 +112,7 @@ export default function NoteScreen() {
       </ScrollView>
 
       <Pressable
-        onPress={() => router.push("/create-note")}
+        onPress={() => openEditor()}
         className="absolute bottom-8 right-6 h-16 w-16 items-center justify-center bg-neutral-900"
       >
         <Text

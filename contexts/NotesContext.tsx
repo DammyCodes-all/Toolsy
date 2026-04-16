@@ -21,10 +21,17 @@ type CreateNoteInput = {
   body: string;
 };
 
+type UpdateNoteInput = {
+  title?: string;
+  body?: string;
+  done?: boolean;
+};
+
 type NotesContextValue = {
   notes: NoteItem[];
   isLoading: boolean;
   addNote: (input: CreateNoteInput) => Promise<void>;
+  updateNote: (id: string, input: UpdateNoteInput) => Promise<void>;
   toggleNoteDone: (id: string) => Promise<void>;
   removeNote: (id: string) => Promise<void>;
   clearNotes: () => Promise<void>;
@@ -59,7 +66,11 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const persistNotes = useCallback(async (nextNotes: NoteItem[]) => {
-    await AsyncStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(nextNotes));
+    try {
+      await AsyncStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(nextNotes));
+    } catch {
+      // Swallow persist errors for now; callers rely on optimistic UI + best-effort persistence.
+    }
   }, []);
 
   useEffect(() => {
@@ -132,6 +143,35 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
     [persistNotes],
   );
 
+  const updateNote = useCallback(
+    async (id: string, input: UpdateNoteInput) => {
+      let nextNotes: NoteItem[] = [];
+
+      setNotes((currentNotes) => {
+        nextNotes = currentNotes.map((note) =>
+          note.id === id
+            ? {
+                ...note,
+                title:
+                  typeof input.title === "string"
+                    ? input.title.trim() || note.title
+                    : note.title,
+                body:
+                  typeof input.body === "string"
+                    ? input.body.trim()
+                    : note.body,
+                done: typeof input.done === "boolean" ? input.done : note.done,
+              }
+            : note,
+        );
+        return nextNotes;
+      });
+
+      await persistNotes(nextNotes);
+    },
+    [persistNotes],
+  );
+
   const toggleNoteDone = useCallback(
     async (id: string) => {
       let nextNotes: NoteItem[] = [];
@@ -164,7 +204,11 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
 
   const clearNotes = useCallback(async () => {
     setNotes([]);
-    await AsyncStorage.removeItem(NOTES_STORAGE_KEY);
+    try {
+      await AsyncStorage.removeItem(NOTES_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
   }, []);
 
   const value = useMemo<NotesContextValue>(
@@ -172,11 +216,20 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
       notes,
       isLoading,
       addNote,
+      updateNote,
       toggleNoteDone,
       removeNote,
       clearNotes,
     }),
-    [notes, isLoading, addNote, toggleNoteDone, removeNote, clearNotes],
+    [
+      notes,
+      isLoading,
+      addNote,
+      updateNote,
+      toggleNoteDone,
+      removeNote,
+      clearNotes,
+    ],
   );
 
   return (

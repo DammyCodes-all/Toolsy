@@ -1,7 +1,12 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Clock01Icon, Delete01Icon } from "@hugeicons/core-free-icons";
+import {
+  Clock01Icon,
+  Delete01Icon,
+  Edit01Icon,
+} from "@hugeicons/core-free-icons";
+
 export interface NoteItem {
   id: string;
   title: string;
@@ -14,6 +19,7 @@ interface NoteProps {
   note: NoteItem;
   onToggleDone?: () => void;
   onDelete?: () => void;
+  onEdit?: () => void;
 }
 
 function timeAgoOrDate(iso: string) {
@@ -37,7 +43,7 @@ function timeAgoOrDate(iso: string) {
   }
 }
 
-export function Note({ note, onToggleDone, onDelete }: NoteProps) {
+export function Note({ note, onToggleDone, onDelete, onEdit }: NoteProps) {
   const isDone = note.done;
 
   return (
@@ -76,23 +82,41 @@ export function Note({ note, onToggleDone, onDelete }: NoteProps) {
             <HugeiconsIcon icon={Clock01Icon} /> {timeAgoOrDate(note.createdAt)}
           </Text>
 
-          <Pressable
-            onPress={(e) => {
-              e.stopPropagation?.();
-              onDelete?.();
-            }}
-            className="px-2 py-2 bg-neutral-900"
-            accessibilityLabel="Delete note"
-            accessibilityRole="button"
-          >
-            <Text className="text-xs text-neutral-100">
+          <View className="flex-row items-center gap-2">
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation?.();
+                onEdit?.();
+              }}
+              className="p-2 bg-neutral-300"
+              accessibilityLabel="Edit note"
+              accessibilityRole="button"
+            >
               <HugeiconsIcon
-                icon={Delete01Icon}
-                size={16}
-                className="text-neutral-100"
+                icon={Edit01Icon}
+                size={18}
+                className="text-neutral-900"
               />
-            </Text>
-          </Pressable>
+            </Pressable>
+
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation?.();
+                onDelete?.();
+              }}
+              className="px-2 py-2 bg-neutral-900"
+              accessibilityLabel="Delete note"
+              accessibilityRole="button"
+            >
+              <Text className="text-xs text-neutral-100">
+                <HugeiconsIcon
+                  icon={Delete01Icon}
+                  size={16}
+                  className="text-neutral-100"
+                />
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     </Pressable>
