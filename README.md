@@ -289,28 +289,4 @@ How to build an APK and upload to Appetize (quick guide)
    - Building an IPA requires Apple credentials. Use `eas build -p ios` and follow EAS prompts for credentials or configure them in App Store Connect.
 5. Add the Appetize public URL to this README (under "Appetize preview link") and include it in your submission form.
 
-Verification checklist (what to test)
-- Edit flow:
-  - Open the Notes screen, tap Edit on an existing note, modify fields, and save — changes persist and show immediately.
-- Create / Delete / Toggle:
-  - Create a new note, mark it done/undone, delete it with confirmation.
-- Persistence:
-  - Close the app fully and restart; tasks should persist via AsyncStorage (key: `toolsy.notes`).
-- If you need checklist/subtask support in the future, extend `NoteItem` in `contexts/NotesContext.tsx` with a `subtasks` array and surface operations in the context.
-
-Submission checklist
-- Appetize preview link (public)
-- GitHub repository link (this repo)
-- LinkedIn/X post describing:
-  - Development process
-  - Challenges encountered
-  - Purpose of the task
-  - How the task improved your workflow
-  - Tag the HNG Internship account in the post
-
-Next steps I can take for you
-- Open a PR with the concrete code changes (implementing `updateNote`, wiring the edit mode in `create-note`, and adding the Edit action in the Note UI).
-- Provide the exact EAS commands you should run locally and what to expect from the build output.
-- Draft a short LinkedIn/X post you can publish for the submission.
-
 Built with ❤️ by Aluminate
